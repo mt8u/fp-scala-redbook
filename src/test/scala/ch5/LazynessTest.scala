@@ -21,3 +21,34 @@ class ch5_Suite extends munit.FunSuite:
   test("takeWhile"):
     assertEquals(LazyList.Empty.takeWhile(A => true), LazyList.empty)
     assertEquals(lazyList.takeWhile(a => a <= 2).toList, LazyList(1, 2).toList)
+
+  test("forAll"):
+    assertEquals(LazyList.Empty.forAll(A => true), true)
+    assertEquals(
+      lazyList.forAll(a => a <= 2),
+      false
+    )
+    assertEquals(
+      lazyList.forAll(a => a > 0),
+      true
+    )
+
+  test("takeWhileWithFoldRight"):
+    assertEquals(
+      LazyList.Empty.takeWhileWithFoldRight(A => true),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.takeWhileWithFoldRight(a => a <= 2).toList,
+      LazyList(1, 2).toList
+    )
+
+  test("headOption"):
+    assertEquals(
+      LazyList.Empty.headOption,
+      None
+    )
+    assertEquals(
+      lazyList.headOption,
+      Some(1)
+    )

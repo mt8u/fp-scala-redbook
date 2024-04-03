@@ -1,5 +1,7 @@
 package ch5
 
+import ch5.LazyList.empty
+
 enum LazyList[+A]:
   case Empty
   case Cons(h: () => A, t: () => LazyList[A])
@@ -27,6 +29,20 @@ enum LazyList[+A]:
     this match
       case Cons(h, t) if p(h()) => Cons(h, () => t().takeWhile(p))
       case _                    => Empty
+
+  def foldRight[B](acc: => B)(f: (A, => B) => B): B =
+    this match
+      case Cons(h, t) => f(h(), t().foldRight(acc)(f))
+      case _          => acc
+
+  def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
+
+  def takeWhileWithFoldRight(p: A => Boolean): LazyList[A] =
+    foldRight(empty)((a, b) => if p(a) then LazyList.cons(a, b) else empty)
+
+  def headOption: Option[A] =
+    foldRight(None: Option[A])((a, _) => Some(a))
 
 object LazyList:
   def cons[A](
