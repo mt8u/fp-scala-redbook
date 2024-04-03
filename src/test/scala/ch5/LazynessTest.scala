@@ -15,5 +15,9 @@ class ch5_Suite extends munit.FunSuite:
 
   test("drop"):
     assertEquals(lazyList.drop(2).toList, LazyList(3).toList)
-    assertEquals(lazyList.drop(5).toList, LazyList.empty.toList)
-    assertEquals(LazyList.Empty.drop(2).toList, LazyList.empty.toList)
+    assertEquals(lazyList.drop(5), LazyList.empty)
+    assertEquals(LazyList.Empty.drop(2), LazyList.empty)
+
+  test("takeWhile"):
+    assertEquals(LazyList.Empty.takeWhile(A => true), LazyList.empty)
+    assertEquals(lazyList.takeWhile(a => a <= 2).toList, LazyList(1, 2).toList)
