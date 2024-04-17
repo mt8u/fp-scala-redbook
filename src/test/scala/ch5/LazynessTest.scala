@@ -63,3 +63,13 @@ class ch5_Suite extends munit.FunSuite:
       lazyList.map(_.toString).toList,
       LazyList("1", "2", "3").toList
     )
+
+  test("filter"):
+    assertEquals(
+      LazyList.Empty.filter(A => true),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.filter(a => a <= 2).toList,
+      LazyList(1, 2).toList
+    )

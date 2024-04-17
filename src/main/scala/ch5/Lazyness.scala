@@ -47,6 +47,9 @@ enum LazyList[+A]:
   def map[B](f: A => B): LazyList[B] =
     foldRight(empty)((a, b) => LazyList.cons(f(a), b))
 
+  def filter(p: A => Boolean): LazyList[A] =
+    foldRight(empty)((a, b) => if p(a) then LazyList.cons(a, b) else b)
+
 object LazyList:
   def cons[A](
       hd: => A,
