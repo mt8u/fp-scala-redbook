@@ -50,7 +50,7 @@ enum LazyList[+A]:
   def filter(p: A => Boolean): LazyList[A] =
     foldRight(empty)((a, b) => if p(a) then LazyList.cons(a, b) else b)
 
-  def append[B >: A](l: LazyList[B]): LazyList[B] =
+  def append[B >: A](l: => LazyList[B]): LazyList[B] =
     foldRight(l)((a, b) => LazyList.cons(a, b))
 
 object LazyList:
