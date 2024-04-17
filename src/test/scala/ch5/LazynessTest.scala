@@ -87,3 +87,21 @@ class ch5_Suite extends munit.FunSuite:
       lazyList.append(LazyList(-1, -2)).toList,
       LazyList(1, 2, 3, -1, -2).toList
     )
+
+  test("flatMap"):
+    assertEquals(
+      emptyList.flatMap(a => LazyList(a + 10)),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.flatMap(a => LazyList(a + 10)).toList,
+      LazyList(11, 12, 13).toList
+    )
+    assertEquals(
+      lazyList.flatMap(a => LazyList.empty),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.flatMap(a => LazyList(a + 10, a + 20)).toList,
+      LazyList(11, 21, 12, 22, 13, 23).toList
+    )

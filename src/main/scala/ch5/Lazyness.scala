@@ -53,6 +53,9 @@ enum LazyList[+A]:
   def append[B >: A](l: => LazyList[B]): LazyList[B] =
     foldRight(l)((a, b) => LazyList.cons(a, b))
 
+  def flatMap[B](f: A => LazyList[B]): LazyList[B] =
+    foldRight(empty)((a, b) => f(a).append(b))
+
 object LazyList:
   def cons[A](
       hd: => A,
