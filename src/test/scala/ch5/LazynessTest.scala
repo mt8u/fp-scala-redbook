@@ -3,6 +3,7 @@ package ch5
 class ch5_Suite extends munit.FunSuite:
 
   val lazyList = LazyList(1, 2, 3)
+  val emptyList: LazyList[Int] = LazyList.Empty
 
   test("toList"):
     assertEquals(lazyList.toList, List(1, 2, 3))
@@ -51,4 +52,14 @@ class ch5_Suite extends munit.FunSuite:
     assertEquals(
       lazyList.headOption,
       Some(1)
+    )
+
+  test("map"):
+    assertEquals(
+      emptyList.map(_ + 10),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.map(_.toString).toList,
+      LazyList("1", "2", "3").toList
     )

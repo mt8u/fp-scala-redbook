@@ -44,6 +44,9 @@ enum LazyList[+A]:
   def headOption: Option[A] =
     foldRight(None: Option[A])((a, _) => Some(a))
 
+  def map[B](f: A => B): LazyList[B] =
+    foldRight(empty)((a, b) => LazyList.cons(f(a), b))
+
 object LazyList:
   def cons[A](
       hd: => A,
