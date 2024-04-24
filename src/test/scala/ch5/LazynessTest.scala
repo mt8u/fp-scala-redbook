@@ -105,3 +105,9 @@ class ch5_Suite extends munit.FunSuite:
       lazyList.flatMap(a => LazyList(a + 10, a + 20)).toList,
       LazyList(11, 21, 12, 22, 13, 23).toList
     )
+
+  test("continually"):
+    assertEquals(
+      LazyList.continually(5).take(5).toList,
+      LazyList(5, 5, 5, 5, 5).toList
+    )

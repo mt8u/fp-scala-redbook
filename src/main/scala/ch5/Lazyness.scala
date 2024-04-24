@@ -70,3 +70,5 @@ object LazyList:
   def apply[A](as: A*): LazyList[A] =
     if as.isEmpty then empty
     else cons(as.head, apply(as.tail*))
+
+  def continually[A](a: A): LazyList[A] = LazyList.cons(a, continually(a))
