@@ -111,3 +111,16 @@ class ch5_Suite extends munit.FunSuite:
       LazyList.continually(5).take(5).toList,
       LazyList(5, 5, 5, 5, 5).toList
     )
+
+  test("from"):
+    assertEquals(
+      LazyList.from(3).take(5).toList,
+      LazyList(3, 4, 5, 6, 7).toList
+    )
+
+  test("fibs"):
+    assertEquals(
+      LazyList.fibs().take(7).toList,
+      LazyList(0, 1, 1, 2, 3, 5, 8).toList
+    )
+
