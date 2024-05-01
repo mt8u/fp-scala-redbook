@@ -124,3 +124,9 @@ class ch5_Suite extends munit.FunSuite:
       LazyList(0, 1, 1, 2, 3, 5, 8).toList
     )
 
+  test("unfold"):
+    val f = (n: Int) => if n < 4 then Some(n.toString, n + 1) else None
+    assertEquals(
+      LazyList.unfold(0)(f).toList,
+      LazyList("0", "1", "2", "3").toList
+    )

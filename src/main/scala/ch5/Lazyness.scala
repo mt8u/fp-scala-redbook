@@ -78,6 +78,9 @@ object LazyList:
   def fibs(): LazyList[Int] =
     def loop(curr: Int, next: Int): LazyList[Int] =
       LazyList.cons(curr, loop(next, curr + next))
-
     loop(0, 1)
 
+  def unfold[A, S](state: S)(f: S => Option[(A, S)]): LazyList[A] =
+    f(state)
+      .map((a, s) => cons(a, unfold(s)(f)))
+      .getOrElse(empty)
