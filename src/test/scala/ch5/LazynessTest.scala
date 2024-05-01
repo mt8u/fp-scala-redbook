@@ -136,3 +136,21 @@ class ch5_Suite extends munit.FunSuite:
       LazyList.fibsViaUnfold().take(7).toList,
       LazyList(0, 1, 1, 2, 3, 5, 8).toList
     )
+
+  test("fromViaUnfold"):
+    assertEquals(
+      LazyList.fromViaUnfold(3).take(5).toList,
+      LazyList(3, 4, 5, 6, 7).toList
+    )
+
+  test("continuallyViaUnfold"):
+    assertEquals(
+      LazyList.continuallyViaUnfold(5).take(5).toList,
+      LazyList(5, 5, 5, 5, 5).toList
+    )
+
+  test("ones"):
+    assertEquals(
+      LazyList.ones.take(5).toList,
+      LazyList(1, 1, 1, 1, 1).toList
+    )

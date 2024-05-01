@@ -86,3 +86,10 @@ object LazyList:
       .getOrElse(empty)
 
   def fibsViaUnfold(): LazyList[Int] = unfold((0,1))((c, n) => Some(c, (n, c + n)))
+
+  def fromViaUnfold(n: Int): LazyList[Int] = unfold(n)(n => Some(n, n + 1))
+
+  def continuallyViaUnfold[A](a: A): LazyList[A] = unfold(())(Some(a, _))
+
+  val ones: LazyList[Int] = unfold(())(Some(1, _))
+
