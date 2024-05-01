@@ -84,3 +84,5 @@ object LazyList:
     f(state)
       .map((a, s) => cons(a, unfold(s)(f)))
       .getOrElse(empty)
+
+  def fibsViaUnfold(): LazyList[Int] = unfold((0,1))((c, n) => Some(c, (n, c + n)))

@@ -130,3 +130,9 @@ class ch5_Suite extends munit.FunSuite:
       LazyList.unfold(0)(f).toList,
       LazyList("0", "1", "2", "3").toList
     )
+
+  test("fibsViaUnfold"):
+    assertEquals(
+      LazyList.fibsViaUnfold().take(7).toList,
+      LazyList(0, 1, 1, 2, 3, 5, 8).toList
+    )
