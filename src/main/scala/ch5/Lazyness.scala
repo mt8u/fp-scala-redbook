@@ -1,6 +1,6 @@
 package ch5
 
-import ch5.LazyList.empty
+import ch5.LazyList.{empty, unfold}
 
 enum LazyList[+A]:
   case Empty
@@ -56,6 +56,31 @@ enum LazyList[+A]:
   def flatMap[B](f: A => LazyList[B]): LazyList[B] =
     foldRight(empty)((a, b) => f(a).append(b))
 
+  def mapViaUnfold[B](f: A => B): LazyList[B] =
+    unfold(this) {
+      case Cons(h, t) => Some(f(h()), t())
+      case _ => None
+    }
+
+  def takeViaUnfold(n: Int): LazyList[A] =
+    unfold((this, n)) {
+      case (Cons(h, t), n) if n > 0 => Some(h(), (t(), (n - 1)))
+      case _ => None
+    }
+
+  def takeWhileViaUnfold(p: A => Boolean): LazyList[A] =
+    unfold((this)) {
+      case Cons(h, t) if p(h()) => Some(h(), t())
+      case _ => None
+    }
+
+  def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] =
+    unfold((this, that)) {
+      case (Cons(h1, t1), Cons(h2, t2)) => Some((Some(h1()), Some(h2())), (t1(), t2()))
+      case _ => None
+    }
+
+
 object LazyList:
   def cons[A](
       hd: => A,
@@ -92,4 +117,5 @@ object LazyList:
   def continuallyViaUnfold[A](a: A): LazyList[A] = unfold(())(Some(a, _))
 
   val ones: LazyList[Int] = unfold(())(Some(1, _))
+
 
