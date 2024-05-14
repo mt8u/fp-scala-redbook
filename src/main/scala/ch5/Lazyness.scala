@@ -86,6 +86,10 @@ enum LazyList[+A]:
       case _ => None
     }
 
+  def startsWith[A](prefix: LazyList[A]): Boolean = (this, prefix) match
+    case (Empty, Cons(h, t)) => false
+    case (l1, l2) => l1.zipWith(l2, (a, b) => a == b).forAll(_ == true)
+
 
 object LazyList:
   def cons[A](

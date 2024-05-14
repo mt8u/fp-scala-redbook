@@ -201,3 +201,21 @@ class ch5_Suite extends munit.FunSuite:
       lazyList.zipWith(LazyList(3, 4, 6), (a: Int, b: Int) => a + b).toList,
       LazyList(4, 6, 9).toList
     )
+
+  test("startsWith"):
+    assertEquals(
+      LazyList.Empty.startsWith(LazyList(1, 2)),
+      false
+    )
+    assertEquals(
+      lazyList.startsWith(LazyList(1, 2)),
+      true
+    )
+    assertEquals(
+      lazyList.startsWith(LazyList(1, 1)),
+      false
+    )
+    assertEquals(
+      lazyList.startsWith(LazyList(1, 2, 3, 4)),
+      false
+    )
