@@ -80,6 +80,12 @@ enum LazyList[+A]:
       case _ => None
     }
 
+  def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] =
+    unfold((this, that)) {
+      case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
+
 
 object LazyList:
   def cons[A](

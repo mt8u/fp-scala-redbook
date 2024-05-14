@@ -176,11 +176,28 @@ class ch5_Suite extends munit.FunSuite:
 
   test("takeWhileViaUnfold"):
     assertEquals(LazyList.Empty.takeWhileViaUnfold(A => true), LazyList.empty)
-    assertEquals(lazyList.takeWhileViaUnfold(a => a <= 2).toList, LazyList(1, 2).toList)
+    assertEquals(
+      lazyList.takeWhileViaUnfold(a => a <= 2).toList,
+      LazyList(1, 2).toList
+    )
 
   test("zipAll"):
     assertEquals(LazyList.Empty.zipAll(LazyList(1, 2, 3)), LazyList.empty)
     assertEquals(
       lazyList.zipAll(LazyList(3, 4, 6)).toList,
-      LazyList((Some(1), Some(3)), (Some(2), Some(4)), (Some(3), Some(6))).toList
+      LazyList(
+        (Some(1), Some(3)),
+        (Some(2), Some(4)),
+        (Some(3), Some(6))
+      ).toList
+    )
+
+  test("zipWith"):
+    assertEquals(
+      LazyList.Empty.zipWith(LazyList(1, 2, 3), (a: Int, b: Int) => a + b),
+      LazyList.empty
+    )
+    assertEquals(
+      lazyList.zipWith(LazyList(3, 4, 6), (a: Int, b: Int) => a + b).toList,
+      LazyList(4, 6, 9).toList
     )
