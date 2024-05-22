@@ -77,6 +77,8 @@ enum LazyList[+A]:
   def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] =
     unfold((this, that)) {
       case (Cons(h1, t1), Cons(h2, t2)) => Some((Some(h1()), Some(h2())), (t1(), t2()))
+      case (Empty, Cons(h2, t2)) => Some((None, Some(h2())) , (Empty, t2()))
+      case (Cons(h1, t1), Empty) => Some((Some(h1()), None) , (t1(), Empty))
       case _ => None
     }
 
@@ -86,9 +88,8 @@ enum LazyList[+A]:
       case _ => None
     }
 
-  def startsWith[A](prefix: LazyList[A]): Boolean = (this, prefix) match
-    case (Empty, Cons(h, t)) => false
-    case (l1, l2) => l1.zipWith(l2, (a, b) => a == b).forAll(_ == true)
+  def startsWith[A](prefix: LazyList[A]): Boolean =
+    zipAll(prefix).forAll((a, b) => (a == b || b.isEmpty))
 
 
 object LazyList:

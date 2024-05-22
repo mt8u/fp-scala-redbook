@@ -1,5 +1,7 @@
 package ch5
 
+import ch5.LazyList.{Cons, Empty}
+
 class ch5_Suite extends munit.FunSuite:
 
   val lazyList = LazyList(1, 2, 3)
@@ -182,13 +184,46 @@ class ch5_Suite extends munit.FunSuite:
     )
 
   test("zipAll"):
-    assertEquals(LazyList.Empty.zipAll(LazyList(1, 2, 3)), LazyList.empty)
     assertEquals(
       lazyList.zipAll(LazyList(3, 4, 6)).toList,
       LazyList(
         (Some(1), Some(3)),
         (Some(2), Some(4)),
         (Some(3), Some(6))
+      ).toList
+    )
+    assertEquals(
+      (LazyList.Empty : LazyList[Int]).zipAll(lazyList).toList,
+      LazyList(
+        (None, Some(1)),
+        (None, Some(2)),
+        (None, Some(3))
+      ).toList
+    )
+    assertEquals(
+      lazyList.zipAll(LazyList.Empty : LazyList[Int]).toList,
+      LazyList(
+        (Some(1), None),
+        (Some(2), None),
+        (Some(3), None)
+      ).toList
+    )
+    assertEquals(
+      lazyList.zipAll(LazyList(3, 4, 6, 7)).toList,
+      LazyList(
+        (Some(1), Some(3)),
+        (Some(2), Some(4)),
+        (Some(3), Some(6)),
+        (None, Some(7)),
+      ).toList
+    )
+    assertEquals(
+      LazyList(3, 4, 6, 7).zipAll(lazyList).toList,
+      LazyList(
+        (Some(3), Some(1)),
+        (Some(4), Some(2)),
+        (Some(6), Some(3)),
+        (Some(7), None),
       ).toList
     )
 
@@ -218,4 +253,12 @@ class ch5_Suite extends munit.FunSuite:
     assertEquals(
       lazyList.startsWith(LazyList(1, 2, 3, 4)),
       false
+    )
+    assertEquals(
+      lazyList.startsWith(Empty),
+      true
+    )
+    assertEquals(
+      Empty.startsWith(Empty),
+      true
     )
