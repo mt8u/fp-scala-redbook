@@ -92,6 +92,8 @@ enum LazyList[+A]:
     zipAll(prefix).forAll((a, b) => (a == b || b.isEmpty))
 
 
+  def tails: LazyList[LazyList[A]] =
+    unfold(this)(s => Some(s, s.drop(1)))
 object LazyList:
   def cons[A](
       hd: => A,
