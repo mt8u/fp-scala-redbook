@@ -94,6 +94,11 @@ enum LazyList[+A]:
 
   def tails: LazyList[LazyList[A]] =
     unfold(this)(s => Some(s, s.drop(1)))
+
+  def scanRight[B](b: B)(f: (A, B) => B): LazyList[B] =
+    ???
+    //tails.map(l => unfold(b, l)(s => (l.headOption.map(h => (f(h, s(0)), (f(h, s(0)), s(1).drop(1)))))))
+    
 object LazyList:
   def cons[A](
       hd: => A,

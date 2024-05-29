@@ -265,3 +265,6 @@ class ch5_Suite extends munit.FunSuite:
 
     test("tails"):
       assertEquals(lazyList.tails, LazyList(LazyList(1, 2, 3), LazyList(2, 3), LazyList(3), LazyList()))
+
+  test("scanRight"):
+    assertEquals(lazyList.scanRight(0)(_ + _).toList, List(6, 5, 3, 0))
