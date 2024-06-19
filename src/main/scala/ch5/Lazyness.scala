@@ -102,7 +102,12 @@ enum LazyList[+A]:
     )
 
   def scanRight[B](b: B)(f: (A, B) => B): LazyList[B] =
-    ???
+    foldRight(LazyList(b))((a, acc) =>
+      acc match
+        case Empty      => Cons(() => f(a, b), () => Empty)
+        case Cons(h, t) => Cons(() => f(a, h()), () => acc)
+    )
+
     // tails.map(l => unfold(b, l)(s => (l.headOption.map(h => (f(h, s(0)), (f(h, s(0)), s(1).drop(1)))))))
 
 object LazyList:

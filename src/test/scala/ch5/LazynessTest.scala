@@ -277,3 +277,7 @@ class ch5_Suite extends munit.FunSuite:
 
   test("scanRight"):
     assertEquals(lazyList.scanRight(0)(_ + _).toList, List(6, 5, 3, 0))
+    assertEquals(
+      lazyList.scanRight("")((a, b) => b + a.toString).toList,
+      List("321", "32", "3", "")
+    )
