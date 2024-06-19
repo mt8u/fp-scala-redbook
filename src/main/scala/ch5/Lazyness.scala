@@ -1,6 +1,7 @@
 package ch5
 
-import ch5.LazyList.{empty, unfold}
+import ch5.LazyList.empty
+import ch5.LazyList.unfold
 
 enum LazyList[+A]:
   case Empty
@@ -59,46 +60,51 @@ enum LazyList[+A]:
   def mapViaUnfold[B](f: A => B): LazyList[B] =
     unfold(this) {
       case Cons(h, t) => Some(f(h()), t())
-      case _ => None
+      case _          => None
     }
 
   def takeViaUnfold(n: Int): LazyList[A] =
     unfold((this, n)) {
       case (Cons(h, t), n) if n > 0 => Some(h(), (t(), (n - 1)))
-      case _ => None
+      case _                        => None
     }
 
   def takeWhileViaUnfold(p: A => Boolean): LazyList[A] =
     unfold((this)) {
       case Cons(h, t) if p(h()) => Some(h(), t())
-      case _ => None
+      case _                    => None
     }
 
   def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] =
     unfold((this, that)) {
-      case (Cons(h1, t1), Cons(h2, t2)) => Some((Some(h1()), Some(h2())), (t1(), t2()))
-      case (Empty, Cons(h2, t2)) => Some((None, Some(h2())) , (Empty, t2()))
-      case (Cons(h1, t1), Empty) => Some((Some(h1()), None) , (t1(), Empty))
-      case _ => None
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some((Some(h1()), Some(h2())), (t1(), t2()))
+      case (Empty, Cons(h2, t2)) => Some((None, Some(h2())), (Empty, t2()))
+      case (Cons(h1, t1), Empty) => Some((Some(h1()), None), (t1(), Empty))
+      case _                     => None
     }
 
   def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] =
     unfold((this, that)) {
       case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
-      case _ => None
+      case _                            => None
     }
 
   def startsWith[A](prefix: LazyList[A]): Boolean =
     zipAll(prefix).forAll((a, b) => (a == b || b.isEmpty))
 
-
   def tails: LazyList[LazyList[A]] =
-    unfold(this)(s => Some(s, s.drop(1)))
+    unfold(Some(this): Option[LazyList[A]])(s =>
+      s match
+        case Some(Cons(_, t)) => Some(s.get, Some(t()))
+        case Some(Empty)      => Some(Empty, None)
+        case _                => None
+    )
 
   def scanRight[B](b: B)(f: (A, B) => B): LazyList[B] =
     ???
-    //tails.map(l => unfold(b, l)(s => (l.headOption.map(h => (f(h, s(0)), (f(h, s(0)), s(1).drop(1)))))))
-    
+    // tails.map(l => unfold(b, l)(s => (l.headOption.map(h => (f(h, s(0)), (f(h, s(0)), s(1).drop(1)))))))
+
 object LazyList:
   def cons[A](
       hd: => A,
@@ -128,12 +134,11 @@ object LazyList:
       .map((a, s) => cons(a, unfold(s)(f)))
       .getOrElse(empty)
 
-  def fibsViaUnfold(): LazyList[Int] = unfold((0,1))((c, n) => Some(c, (n, c + n)))
+  def fibsViaUnfold(): LazyList[Int] =
+    unfold((0, 1))((c, n) => Some(c, (n, c + n)))
 
   def fromViaUnfold(n: Int): LazyList[Int] = unfold(n)(n => Some(n, n + 1))
 
   def continuallyViaUnfold[A](a: A): LazyList[A] = unfold(())(Some(a, _))
 
   val ones: LazyList[Int] = unfold(())(Some(1, _))
-
-

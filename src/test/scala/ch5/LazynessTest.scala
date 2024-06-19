@@ -1,6 +1,7 @@
 package ch5
 
-import ch5.LazyList.{Cons, Empty}
+import ch5.LazyList.Cons
+import ch5.LazyList.Empty
 
 class ch5_Suite extends munit.FunSuite:
 
@@ -193,7 +194,7 @@ class ch5_Suite extends munit.FunSuite:
       ).toList
     )
     assertEquals(
-      (LazyList.Empty : LazyList[Int]).zipAll(lazyList).toList,
+      (LazyList.Empty: LazyList[Int]).zipAll(lazyList).toList,
       LazyList(
         (None, Some(1)),
         (None, Some(2)),
@@ -201,7 +202,7 @@ class ch5_Suite extends munit.FunSuite:
       ).toList
     )
     assertEquals(
-      lazyList.zipAll(LazyList.Empty : LazyList[Int]).toList,
+      lazyList.zipAll(LazyList.Empty: LazyList[Int]).toList,
       LazyList(
         (Some(1), None),
         (Some(2), None),
@@ -214,7 +215,7 @@ class ch5_Suite extends munit.FunSuite:
         (Some(1), Some(3)),
         (Some(2), Some(4)),
         (Some(3), Some(6)),
-        (None, Some(7)),
+        (None, Some(7))
       ).toList
     )
     assertEquals(
@@ -223,7 +224,7 @@ class ch5_Suite extends munit.FunSuite:
         (Some(3), Some(1)),
         (Some(4), Some(2)),
         (Some(6), Some(3)),
-        (Some(7), None),
+        (Some(7), None)
       ).toList
     )
 
@@ -263,8 +264,16 @@ class ch5_Suite extends munit.FunSuite:
       true
     )
 
-    test("tails"):
-      assertEquals(lazyList.tails, LazyList(LazyList(1, 2, 3), LazyList(2, 3), LazyList(3), LazyList()))
+  test("tails"):
+    assertEquals(
+      lazyList.tails.map(_.toList).toList,
+      LazyList(
+        LazyList(1, 2, 3).toList,
+        LazyList(2, 3).toList,
+        LazyList(3).toList,
+        LazyList().toList
+      ).toList
+    )
 
   test("scanRight"):
     assertEquals(lazyList.scanRight(0)(_ + _).toList, List(6, 5, 3, 0))
