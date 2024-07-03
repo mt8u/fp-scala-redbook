@@ -16,3 +16,8 @@ object SimpleRNG:
     n match
       case Int.MinValue => (Int.MaxValue, rng2)
       case _: Int       => (Math.abs(n), rng2)
+      
+  def double(rng: RNG): (Double, RNG) =
+    val (n, rng2) = nonNegativeInt(rng)
+    ((-n.toDouble / Int.MinValue), rng2)
+
