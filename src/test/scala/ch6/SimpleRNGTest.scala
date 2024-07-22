@@ -62,4 +62,5 @@ class ch6_Suite extends munit.FunSuite:
     val rng: RNG = IncRNGInt(42)
     assertEquals(SimpleRNG.ints(0)(rng)._1, List.empty)
     assertEquals(SimpleRNG.ints(3)(rng)._1, List(43, 44, 45))
+    assertEquals(SimpleRNG.ints(-1)(rng)._1, List.empty)
     assertEquals(SimpleRNG.ints(6)(rng)._1, List(43, 44, 45, 46, 47, 48))
