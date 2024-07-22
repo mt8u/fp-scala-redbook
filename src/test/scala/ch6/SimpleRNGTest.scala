@@ -6,6 +6,11 @@ class ch6_Suite extends munit.FunSuite:
     def nextInt: (Int, RNG) =
       (Int.MinValue, SimpleRNGMinInt(seed))
 
+  case class IncRNGInt(seed: Long) extends RNG:
+    def nextInt: (Int, RNG) =
+      ((seed + 1).toInt, IncRNGInt(seed + 1))
+
+
   case class SimpleRNGZero(seed: Long) extends RNG:
     def nextInt: (Int, RNG) =
       (0, SimpleRNGZero(seed))
@@ -52,3 +57,9 @@ class ch6_Suite extends munit.FunSuite:
     assertEquals(
       SimpleRNG.double3(SimpleRNGZero(0))._1, (0.0, 0.0, 0.0)
     )
+
+  test("ints"):
+    val rng: RNG = IncRNGInt(42)
+    assertEquals(SimpleRNG.ints(0)(rng)._1, List.empty)
+    assertEquals(SimpleRNG.ints(3)(rng)._1, List(43, 44, 45))
+    assertEquals(SimpleRNG.ints(6)(rng)._1, List(43, 44, 45, 46, 47, 48))

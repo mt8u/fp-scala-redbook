@@ -46,3 +46,8 @@ object SimpleRNG:
     val (d2, rng2) = double(rng1)
     val (d3, rng3) = double(rng2)
     ((d1, d2, d3), rng3)
+
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) =
+    Range(0, count).foldLeft((List.empty: List[Int], rng))((tuple, index) =>
+      (tuple._1 :+ tuple._2.nextInt._1, tuple._2.nextInt._2))
+
