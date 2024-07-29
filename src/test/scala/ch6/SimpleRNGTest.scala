@@ -69,4 +69,13 @@ class ch6_Suite extends munit.FunSuite:
     val rng: RNG = SimpleRNG(42)
     assertEquals(SimpleRNG.doubleViaMap(SimpleRNGMinInt(0))._1, 0.9999999995343387)
     assertEquals(SimpleRNG.doubleViaMap(SimpleRNGZero(0))._1, 0.0)
-    
+
+
+  test("map2"):
+    val rng: RNG = SimpleRNG(42)
+    assertEquals(
+      SimpleRNG.map2(_.nextInt, SimpleRNG.double)((a, b) => (a, b))(SimpleRNGMinInt(0))._1, (-2147483648, 0.9999999995343387)
+    )
+    assertEquals(
+      SimpleRNG.map2(_.nextInt, SimpleRNG.double)((a, b) => (a, b))(SimpleRNGZero(0))._1, (0, 0.0)
+    )
