@@ -1,5 +1,7 @@
 package ch6
 
+type Rand[+A] = RNG => (A, RNG)
+
 trait RNG:
   def nextInt: (Int, RNG)
 
@@ -53,3 +55,14 @@ object SimpleRNG:
         val (nextInt, nextRng) = currRng.nextInt
         (lst :+ nextInt, nextRng)
     }
+
+  def unit[A](a: A): Rand[A] =
+    rng => (a, rng)
+
+  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    rng =>
+      val (a, rng2) = s(rng)
+      (f(a), rng2)
+
+  def doubleViaMap: Rand[Double] = 
+    map(nonNegativeInt)(i => i / (Int.MaxValue.toDouble + 1))
