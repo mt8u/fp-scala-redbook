@@ -72,5 +72,11 @@ object SimpleRNG:
       val (n, rng1) = ra(rng)
       map(rb)(f(n, _))(rng1)
 
-
+  def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
+    rng =>
+      rs.foldLeft((List[A](), rng))((acc, ra) =>
+        val (l, rgen) = acc
+        val (a, rgen2) = ra(rgen)
+        (a :: l, rgen2)
+      )
 

@@ -79,3 +79,7 @@ class ch6_Suite extends munit.FunSuite:
     assertEquals(
       SimpleRNG.map2(_.nextInt, SimpleRNG.double)((a, b) => (a, b))(SimpleRNGZero(0))._1, (0, 0.0)
     )
+
+  test("sequence"):
+    val rng: RNG = IncRNGInt(42)
+    assertEquals(SimpleRNG.sequence(List(_.nextInt, _.nextInt))(rng)._1, List(44, 43))
