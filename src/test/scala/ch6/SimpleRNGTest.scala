@@ -82,4 +82,11 @@ class ch6_Suite extends munit.FunSuite:
 
   test("sequence"):
     val rng: RNG = IncRNGInt(42)
-    assertEquals(SimpleRNG.sequence(List(_.nextInt, _.nextInt))(rng)._1, List(44, 43))
+    assertEquals(SimpleRNG.sequence(List(_.nextInt, _.nextInt, _.nextInt))(rng)._1, List(43, 44, 45))
+
+  test("ints via sequence"):
+    val rng: RNG = IncRNGInt(42)
+    assertEquals(SimpleRNG.intsViaSequence(0)(rng)._1, List.empty)
+    assertEquals(SimpleRNG.intsViaSequence(3)(rng)._1, List(43, 44, 45))
+    assertEquals(SimpleRNG.intsViaSequence(-1)(rng)._1, List.empty)
+    assertEquals(SimpleRNG.intsViaSequence(6)(rng)._1, List(43, 44, 45, 46, 47, 48))

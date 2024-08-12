@@ -74,9 +74,13 @@ object SimpleRNG:
 
   def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
     rng =>
-      rs.foldLeft((List[A](), rng))((acc, ra) =>
-        val (l, rgen) = acc
-        val (a, rgen2) = ra(rgen)
-        (a :: l, rgen2)
-      )
+      rs.foldLeft((List[A](), rng)) {
+        case ((l, rgen), ra) => 
+          val (a, rgen2) = ra(rgen)
+          (l :+ a, rgen2)
+      }
+
+  def intsViaSequence(count: Int)(rng: RNG): (List[Int], RNG) =
+    val ints = List.fill(count)((rng.nextInt)._1)
+    sequence(ints.map(unit))(rng)
 
