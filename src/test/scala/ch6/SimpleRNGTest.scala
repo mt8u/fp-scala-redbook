@@ -90,3 +90,10 @@ class ch6_Suite extends munit.FunSuite:
     assertEquals(SimpleRNG.intsViaSequence(3)(rng)._1, List(43, 44, 45))
     assertEquals(SimpleRNG.intsViaSequence(-1)(rng)._1, List.empty)
     assertEquals(SimpleRNG.intsViaSequence(6)(rng)._1, List(43, 44, 45, 46, 47, 48))
+
+  test("flatMap"):
+    val rng: RNG = IncRNGInt(42)
+    assertEquals(
+      SimpleRNG.flatMap(_.nextInt)(a => SimpleRNG.unit(a * 2.0))(rng)._1,
+      86.0
+    )

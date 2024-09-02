@@ -83,3 +83,7 @@ object SimpleRNG:
   def intsViaSequence(count: Int)(rng: RNG): (List[Int], RNG) =
     sequence[Int](List.fill(count)(_.nextInt))(rng)
 
+  def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] = 
+    rng =>
+      val (a, rng2) = r(rng)
+      f(a)(rng2)
