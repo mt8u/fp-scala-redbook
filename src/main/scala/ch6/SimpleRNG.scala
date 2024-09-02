@@ -81,6 +81,5 @@ object SimpleRNG:
       }
 
   def intsViaSequence(count: Int)(rng: RNG): (List[Int], RNG) =
-    val ints = List.fill(count)((rng.nextInt)._1)
-    sequence(ints.map(unit))(rng)
+    sequence[Int](List.fill(count)(_.nextInt))(rng)
 
