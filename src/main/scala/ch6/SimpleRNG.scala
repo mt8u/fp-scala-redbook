@@ -93,3 +93,10 @@ object SimpleRNG:
       if (i + (n - 1) - mod >= 0)
         unit(mod)
       else nonNegativeLessThan(n)
+
+  def mapViaFlatMap[A, B](r: Rand[A])(f: A => B): Rand[B] =
+    flatMap(r)(a => unit(f(a)))
+
+  def map2ViaFlatMap[A, B, C](rA: Rand[A], rB: Rand[B])(
+      f: (A, B) => C
+  ): Rand[C] = flatMap(rA)(a => map(rB)(f(a, _)))
