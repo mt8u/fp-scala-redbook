@@ -1,5 +1,7 @@
 package ch6
 
+import ch6.SimpleRNG.nonNegativeLessThan
+
 class ch6_Suite extends munit.FunSuite:
 
   case class SimpleRNGMinInt(seed: Long) extends RNG:
@@ -14,6 +16,11 @@ class ch6_Suite extends munit.FunSuite:
   case class SimpleRNGZero(seed: Long) extends RNG:
     def nextInt: (Int, RNG) =
       (0, SimpleRNGZero(seed))
+
+  case class SimpleRNGMaxIntThenIncRngInt(seed: Long) extends RNG:
+    def nextInt: (Int, RNG) =
+      // Int.MaxValue -> 2147483647
+      (Int.MaxValue, IncRNGInt(seed))
       
   test("nonNegativeInt"):
     val rng: RNG = SimpleRNG(42)
@@ -97,3 +104,8 @@ class ch6_Suite extends munit.FunSuite:
       SimpleRNG.flatMap(_.nextInt)(a => SimpleRNG.unit(a * 2.0))(rng)._1,
       86.0
     )
+
+  test("nonNegativeLessThanViaFlatmap"):
+    val rng: RNG = SimpleRNGMaxIntThenIncRngInt(42)
+    val (n, rng2) = SimpleRNG.nonNegativeLessThan(10)(rng)
+    assertEquals(n, 3)

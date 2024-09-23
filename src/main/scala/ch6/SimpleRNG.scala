@@ -24,7 +24,7 @@ object SimpleRNG:
   def nonNegativeInt(rng: RNG): (Int, RNG) =
     val (i, r) = rng.nextInt
     (if i < 0 then -(i + 1) else i, r)
-    
+
   // Implémentation fausse car elle utilise la précédente
   def double_fausse_implem(rng: RNG): (Double, RNG) =
     val (n, rng2) = nonNegativeInt(rng)
@@ -33,8 +33,8 @@ object SimpleRNG:
   def double(rng: RNG): (Double, RNG) =
     val (i, r) = nonNegativeInt(rng)
     (i / (Int.MaxValue.toDouble + 1), r)
-    
-  def intDouble(rng: RNG): ((Int, Double), RNG) = 
+
+  def intDouble(rng: RNG): ((Int, Double), RNG) =
     val (n, rng1) = rng.nextInt
     val (d, rng2) = double(rng1)
     ((n, d), rng2)
@@ -64,7 +64,7 @@ object SimpleRNG:
       val (a, rng2) = s(rng)
       (f(a), rng2)
 
-  def doubleViaMap: Rand[Double] = 
+  def doubleViaMap: Rand[Double] =
     map(nonNegativeInt)(i => i / (Int.MaxValue.toDouble + 1))
 
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
@@ -74,16 +74,22 @@ object SimpleRNG:
 
   def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
     rng =>
-      rs.foldLeft((List[A](), rng)) {
-        case ((l, rgen), ra) => 
-          val (a, rgen2) = ra(rgen)
-          (l :+ a, rgen2)
+      rs.foldLeft((List[A](), rng)) { case ((l, rgen), ra) =>
+        val (a, rgen2) = ra(rgen)
+        (l :+ a, rgen2)
       }
 
   def intsViaSequence(count: Int)(rng: RNG): (List[Int], RNG) =
     sequence[Int](List.fill(count)(_.nextInt))(rng)
 
-  def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] = 
+  def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] =
     rng =>
       val (a, rng2) = r(rng)
       f(a)(rng2)
+
+  def nonNegativeLessThan(n: Int): Rand[Int] =
+    flatMap(nonNegativeInt): i =>
+      val mod = i % n
+      if (i + (n - 1) - mod >= 0)
+        unit(mod)
+      else nonNegativeLessThan(n)
