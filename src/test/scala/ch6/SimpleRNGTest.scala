@@ -150,3 +150,10 @@ class ch6_Suite extends munit.FunSuite:
         ._1,
       (0, 0.0)
     )
+
+  test("mapViaState"):
+    val state: State[List[Int], Int] = State((s: List[Int]) => (s.head, s.tail))
+    assertEquals(
+      state.map(_.toString).run(List(2))._1,
+      "2"
+    )

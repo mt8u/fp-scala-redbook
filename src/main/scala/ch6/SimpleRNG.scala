@@ -1,11 +1,16 @@
 package ch6
 
 opaque type State[S, +A] = S => (A, S)
- 
+
 object State:
   extension [S, A](underlying: State[S, A])
     def run(s: S): (A, S) = underlying(s)
- 
+
+    def map[B](f: A => B): State[S, B] =
+      s =>
+        val (a, newState) = run(s)
+        (f(a), newState)
+
   def unit[S, A](a: A): State[S, A] =
     s => (a, s)
 
@@ -112,4 +117,3 @@ object SimpleRNG:
   def map2ViaFlatMap[A, B, C](rA: Rand[A], rB: Rand[B])(
       f: (A, B) => C
   ): Rand[C] = flatMap(rA)(a => map(rB)(f(a, _)))
-
