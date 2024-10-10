@@ -157,3 +157,11 @@ class ch6_Suite extends munit.FunSuite:
       state.map(_.toString).run(List(2))._1,
       "2"
     )
+
+  test("map2FromState"):
+    val state: State[List[Int], Int] = State((s: List[Int]) => (s.head, s.tail))
+    val state2: State[List[Int], String] = State((s: List[Int]) => (s.head.toString, s.tail))
+    assertEquals(
+      state.map2(state2)((a, b) => (a, b)).run(List(0, 1, 2))._1,
+      (0, "1")
+    )

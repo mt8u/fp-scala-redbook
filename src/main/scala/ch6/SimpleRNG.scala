@@ -10,6 +10,15 @@ object State:
       s =>
         val (a, newState) = run(s)
         (f(a), newState)
+	
+    def map2[B, C](s: State[S, B])(f: (A, B) => C): State[S, C] = 
+      state =>
+        val (a, nextState) = run(state)
+        val (b, nextNextState) = s(nextState)
+        (f(a, b), nextNextState)
+
+
+      
 
   def unit[S, A](a: A): State[S, A] =
     s => (a, s)
