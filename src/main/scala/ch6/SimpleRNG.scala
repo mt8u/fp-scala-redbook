@@ -8,22 +8,28 @@ object State:
 
     def map[B](f: A => B): State[S, B] =
       s =>
-        val (a, newState) = run(s)
+        val (a, newState) = underlying(s)
         (f(a), newState)
 	
-    def map2[B, C](s: State[S, B])(f: (A, B) => C): State[S, C] = 
-      state =>
-        val (a, nextState) = run(state)
-        val (b, nextNextState) = s(nextState)
-        (f(a, b), nextNextState)
+    def map2[B, C](state: State[S, B])(f: (A, B) => C): State[S, C] = 
+      s =>
+        val (a, nextS) = underlying(s)
+        val (b, nextNextS) = state(nextS)
+        (f(a, b), nextNextS)
 
+    def flatMap[B](f: A => State[S, B]): State[S, B] = 
+      s =>
+        val (a, nextS) = underlying(s)
+        f(a)(nextS)
 
-      
-
+  def sequence[S, A](ss: List[State[S, A]]): State[S, List[A]] = 
+    ss.foldLeft(unit(List()): State[S, List[A]])((sl, sa) => sl.map2(sa)((l, a) => a::l))
+    
   def unit[S, A](a: A): State[S, A] =
     s => (a, s)
 
   def apply[S, A](f: S => (A, S)): State[S, A] = f
+    
 
 type Rand[+A] = RNG => (A, RNG)
 // type Rand[A] = State[RNG, A]

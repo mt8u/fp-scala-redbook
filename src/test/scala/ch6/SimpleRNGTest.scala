@@ -160,8 +160,36 @@ class ch6_Suite extends munit.FunSuite:
 
   test("map2FromState"):
     val state: State[List[Int], Int] = State((s: List[Int]) => (s.head, s.tail))
-    val state2: State[List[Int], String] = State((s: List[Int]) => (s.head.toString, s.tail))
+    val state2: State[List[Int], String] =
+      State((s: List[Int]) => (s.head.toString, s.tail))
     assertEquals(
-      state.map2(state2)((a, b) => (a, b)).run(List(0, 1, 2))._1,
-      (0, "1")
+      state.map2(state2)((a, b) => (a, b)).run(List(0, 1, 2)),
+      ((0, "1"), List(2))
     )
+
+  test("flatMapFromState"):
+    val state: State[List[Int], Int] = State((s: List[Int]) => (s.head, s.tail))
+    val f: (a: Int) => State[List[Int], String] =
+      (a: Int) => State((s: List[Int]) => (a.toString, (a + 1) :: s))
+    assertEquals(
+      state.flatMap(f).run(List(1, 2, 3)),
+      ("1", List(2, 2, 3))
+    )
+
+  test("sequenceFromState"):
+    val states: List[State[List[Int], Int]] = List(
+      State(s => (s.head, s.tail)),
+      State(s => (s.head, s.tail)),
+      State(s => (s.head, s.tail))
+    )
+    val initialState = List(1, 2, 3)
+    val result = State.sequence(states).run(initialState)
+
+    assertEquals(
+      result._1,
+      List(1, 2, 3)
+    ) // Expect values in reverse order due to foldLeft with cons (::)
+    assertEquals(
+      result._2,
+      List()
+    ) // Expect the state to be empty after consuming all elements)
