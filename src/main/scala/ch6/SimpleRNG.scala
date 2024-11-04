@@ -22,6 +22,16 @@ object State:
         val (a, nextS) = underlying(s)
         f(a)(nextS)
 
+    def modify(f: S => S): State[S, Unit] =
+     for
+       s <- get
+       _ <- set(f(s))
+     yield ()
+
+    def get: State[S, S] = s => (s, s)
+
+    def set(s: S): State[S, Unit] = _ => ((), s)
+
   def sequence[S, A](ss: List[State[S, A]]): State[S, List[A]] = 
     ss.foldRight(unit(List()): State[S, List[A]])((sl, sa) => sl.map2(sa)((a, l) => a::l))
     
