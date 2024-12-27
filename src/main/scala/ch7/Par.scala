@@ -43,23 +43,23 @@ object Par:
     def get: C =
       val c = f(fa.get, fb.get)
       done = true
-      return c
+      c
     
     def get(timeout: Long, units: TimeUnit): C =
       val timeoutNanos = units.toNanos(timeout)
-      val start = System.nanoTime()
+      val start = System.nanoTime
       val a = fa.get(timeout, units)
-      val end = System.nanoTime()
+      val end = System.nanoTime
       val duration = end - start
       val b = fb.get(timeout - duration, TimeUnit.NANOSECONDS)
       done = true
-      return f(a, b)
+      f(a, b)
     
     def isCancelled = cancelled
     
     def cancel(evenIfRunning: Boolean): Boolean =
       cancelled = true
-      return true
+      true
  
   extension [A](pa: Par[A])
     def map2[B, C](pb: Par[B])(f: (A, B) => C): Par[C] = 
