@@ -67,13 +67,31 @@ object Par:
         val futureA = pa(es)
         val futureB = pb(es)
         MapFuture(futureA, futureB, f)
+        
+    def map[B](f: A => B): Par[B] =
+      pa.map2(unit(()))((a, _) => f(a))
+      
+  def sortPar(parList: Par[List[Int]]) =
+    parList.map(_.sorted)
+      
+  def sequence[A](ps: List[Par[A]]): Par[List[A]] =
+    ps.foldRight(unit(List(): List[A]))((pa, pas) => pa.map2(pas)(_::_))
  
   def fork[A](a: => Par[A]): Par[A] = 
-    es => es.submit(new Callable[A] {
+    es => es.submit(new Callable[A]:
       def call = a(es).get
-    })
+    )
     
   def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
 
   def asyncF[A, B](f: A => B): A => Par[B] =
     a => lazyUnit(f(a))
+
+  def parMap[A, B](ps: List[A])(f: A => B): Par[List[B]] =
+    fork:
+      val fbs: List[Par[B]] = ps.map(asyncF(f))
+      sequence(fbs)
+      
+  // À REFAIRE EN MIEUX EN MOINS BAS NIVEAU
+  def parFilter[A](as: List[A])(f: A => Boolean): Par[List[A]] =
+    as.foldRight(unit(List.empty[A]))((a, pas) => pas.map(as => if f(a) then a::as else as))
