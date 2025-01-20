@@ -10,7 +10,7 @@ case class UnitFuture[A](get: A) extends Future[A]:
 
 class DummyExecutorService extends ExecutorService:
   def submit[A](a: Callable[A]): Future[A] =
-   UnitFuture(a.call)
+    UnitFuture(a.call)
 
 class ch7_Suite extends munit.FunSuite:
 
@@ -25,8 +25,15 @@ class ch7_Suite extends munit.FunSuite:
     )
 
   test("par reduce"):
-    val par = Par.reduce(Vector(1, 2, 3), _ + _, 1)
+    val par = Par.reduce(Vector(1, 2, 3), _ + _, 10)
     assertEquals(
       par.run(DummyExecutorService()).get,
-      7
+      16
+    )
+
+  test("max"):
+    val par = Par.reduce(Vector(1, 2, 4, 3), Math.max, Int.MinValue)
+    assertEquals(
+      par.run(DummyExecutorService()).get,
+      4
     )
