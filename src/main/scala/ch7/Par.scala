@@ -96,3 +96,19 @@ object Par:
     fork:
       val fas: List[Par[List[A]]] = as.map(asyncF(a => if f(a) then List(a) else Nil))
       sequence(fas).map(_.flatten)
+
+  def sum(ints: IndexedSeq[Int]): Par[Int] =
+    if ints.size <= 1 then
+      Par.unit(ints.headOption.getOrElse(0))
+    else
+      val (l, r) = ints.splitAt(ints.size / 2)
+      sum(l).map2(sum(r))(_ + _)
+
+  def reduce(ints: IndexedSeq[Int], f: (Int, Int) => Int, accumulator: Int): Par[Int] =
+    if ints.size == 0 then
+      unit(accumulator)
+    else if ints.size == 1 then
+      unit(ints.head)
+    else
+      val (l, r) = ints.splitAt(ints.size / 2)
+      reduce(l, f, accumulator).map2(reduce(r, f, accumulator))(f)
