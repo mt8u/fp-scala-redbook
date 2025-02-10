@@ -110,14 +110,21 @@ object Par:
       val (l, r) = ints.splitAt(ints.size / 2)
       sum(l).map2(sum(r))(_ + _)
 
-  def reduce(
-      ints: IndexedSeq[Int],
-      f: (Int, Int) => Int,
-      initialValue: Int
-  ): Par[Int] =
-    def loop(ints: IndexedSeq[Int]): Par[Int] =
-      if ints.size == 1 then Par.unit(ints.head)
+  def reduce[A](
+      seq: IndexedSeq[A],
+      f: (A, A) => A,
+      initialValue: A
+  ): Par[A] =
+    def loop(seq: IndexedSeq[A]): Par[A] =
+      if seq.size == 1 then Par.unit(seq.head)
       else
-        val (l, r) = ints.splitAt(ints.size / 2)
+        val (l, r) = seq.splitAt(seq.size / 2)
         loop(l).map2(loop(r))(f)
-    loop(ints :+ initialValue)
+    loop(seq :+ initialValue)
+
+  def max(ints: IndexedSeq[Int]): Par[Int] =
+    reduce(ints, Math.max, Int.MinValue)
+
+  def countWords(paragraphs: List[String]): Par[Int] =
+    parMap(paragraphs)(s => if s.isEmpty() then s.split(' ').length else 0)
+      .map(_.sum)

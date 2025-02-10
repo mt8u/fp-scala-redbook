@@ -32,8 +32,18 @@ class ch7_Suite extends munit.FunSuite:
     )
 
   test("max"):
-    val par = Par.reduce(Vector(1, 2, 4, 3), Math.max, Int.MinValue)
+    val par = Par.max(Vector(1, 2, 4, 3))
     assertEquals(
       par.run(DummyExecutorService()).get,
       4
+    )
+
+  test("countWords"):
+    val par =
+      Par.countWords(
+        List("je m'appelle", "gautier", "", "j'aime pas", "l'archi hexa")
+      )
+    assertEquals(
+      par.run(DummyExecutorService()).get,
+      7
     )
