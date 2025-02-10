@@ -126,5 +126,5 @@ object Par:
     reduce(ints, Math.max, Int.MinValue)
 
   def countWords(paragraphs: List[String]): Par[Int] =
-    parMap(paragraphs)(s => if s.isEmpty() then s.split(' ').length else 0)
+    parMap(paragraphs)(s => if !s.isEmpty then s.split(' ').length else 0)
       .map(_.sum)
